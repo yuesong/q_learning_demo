@@ -1,41 +1,26 @@
-__author__ = 'philippe'
 import World
 import threading
 import time
 
-discount = 0.3
-actions = World.actions
-states = []
+ACTIONS = World.ACTIONS
 Q = {}
-for i in range(World.x):
-    for j in range(World.y):
-        states.append((i, j))
+for x in range(World.BOARD_WIDTH):
+    for y in range(World.BOARD_HEIGHT):
+        temp = {}
+        for action in ACTIONS:
+            temp[action] = 0.1
+        Q[(x, y)] = temp
 
-for state in states:
-    temp = {}
-    for action in actions:
-        temp[action] = 0.1
-    Q[state] = temp
-
-for (i, j, c, w) in World.specials:
-    for action in actions:
-        Q[(i, j)][action] = w
+for (pos, c, w) in World.exits:
+    for action in ACTIONS:
+        Q[pos][action] = w
 
 
 def do_action(action):
-    s = World.player
+    s = World.robot
     r = -World.score
-    if action == actions[0]:
-        World.try_move(0, -1)
-    elif action == actions[1]:
-        World.try_move(0, 1)
-    elif action == actions[2]:
-        World.try_move(-1, 0)
-    elif action == actions[3]:
-        World.try_move(1, 0)
-    else:
-        return
-    s2 = World.player
+    World.try_move(action)
+    s2 = World.robot
     r += World.score
     return s, action, r, s2
 
@@ -56,13 +41,13 @@ def inc_Q(s, a, alpha, inc):
 
 
 def run():
-    global discount
+    discount = 0.3
     time.sleep(1)
     alpha = 1
     t = 1
     while True:
         # Pick the right action
-        s = World.player
+        s = World.robot
         max_act, max_val = max_Q(s)
         (s, a, r, s2) = do_action(max_act)
 
@@ -72,9 +57,9 @@ def run():
 
         # Check if the game has restarted
         t += 1.0
-        if World.has_restarted():
+        if World.game_over:
             World.restart_game()
-            time.sleep(0.01)
+            time.sleep(1)
             t = 1.0
 
         # Update the learning rate
