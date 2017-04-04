@@ -1,6 +1,7 @@
 import World
 import threading
 import time
+import sys
 
 ACTIONS = World.ACTIONS
 Q = {}
@@ -72,4 +73,9 @@ def run():
 t = threading.Thread(target=run)
 t.daemon = True
 t.start()
-World.start_game()
+print sys.argv
+if len(sys.argv) == 1 or not (sys.argv[1] == 'd' or sys.argv[1] == 's'):
+    print 'You must specify the type of game world: d for deterministic, s for stochastic'
+else:
+    World.start_game(sys.argv[1])
+
