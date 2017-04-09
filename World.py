@@ -39,19 +39,20 @@ def render_grid(walls, exits):
         render_cell(pos, c)
 
 robot = (0, BOARD_HEIGHT-1)
-exits = [((BOARD_WIDTH-1, 0), 'green', 1), ((BOARD_WIDTH-1, 1), 'red', -1)]
+# exits = [((BOARD_WIDTH-1, 0), 'green', 1), ((BOARD_WIDTH-1, 1), 'red', -1)]
+exits = [((BOARD_WIDTH-1, 0), 'green', 1)]
 score = 1
 game_over = False
 walk_reward = -0.04
 
 # uncomment to do a 5x5 test
-# walls = [(1, 1), (1, 2), (2, 1), (2, 2)]
+#walls = [(1, 1), (1, 2), (2, 1), (2, 2)]
 
 # uncomment to use constant walls for 10x10 grid
-# walls = [(1,1), (1,2),(1,4),(1,6),(2,7),(2,8),(2,9),(3,1),(3,2),(3,3),(3,4),(3,6),(4,1),(4,3),(5,1),(5,2),(5,3),(5,4),(6,1),(7,3),(7,5),(7,6),(7,7),(7,8),(8,2),(8,5),(8,8)]
+walls = [(1,2),(1,4),(1,6),(1,9),(2,4),(2,5),(2,7),(2,8),(2,9),(3,1),(3,2),(3,3),(3,4),(3,6),(4,1),(4,3),(4,5),(5,1),(5,2),(5,3),(5,4),(6,6),(5,6),(7,2),(7,5),(7,6),(7,7),(7,8),(8,2),(8,5),(8,8),(9,1)]
 
 # random walls for fun
-walls = generate_random_walls(BOARD_WIDTH*BOARD_HEIGHT/5, [robot] + [pos for (pos, c, w) in exits])
+#walls = generate_random_walls(BOARD_WIDTH*BOARD_HEIGHT/4, [robot] + [pos for (pos, c, w) in exits])
 
 render_grid(walls, exits)
 me = render_cell(robot, 'blue')
