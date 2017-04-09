@@ -41,8 +41,16 @@ def inc_Q(s, a, alpha, inc):
     Q[s][a] += alpha * inc
 
 
+def print_Q():
+    for y in range(World.BOARD_HEIGHT):
+        for x in range(World.BOARD_WIDTH):
+            v = '{:.1f},{:.1f},{:.1f},{:.1f}'.format(Q[(x,y)][ACTIONS[0]]*10, Q[(x,y)][ACTIONS[1]]*10, Q[(x,y)][ACTIONS[2]]*10, Q[(x,y)][ACTIONS[3]]*10)
+            sys.stdout.write('{:12} '.format(v))
+        sys.stdout.write('\n')
+        sys.stdout.flush()
+
 def run():
-    discount = 0.3
+    discount = 0.9
     time.sleep(1)
     alpha = 1
     t = 1
@@ -59,6 +67,7 @@ def run():
         # Check if the game has restarted
         t += 1.0
         if World.game_over:
+            print_Q()
             World.restart_game()
             time.sleep(1)
             t = 1.0
@@ -67,13 +76,12 @@ def run():
         alpha = pow(t, -0.1)
 
         # MODIFY THIS SLEEP IF THE GAME IS GOING TOO FAST.
-        time.sleep(0.1)
+        time.sleep(0.017)
 
 
 t = threading.Thread(target=run)
 t.daemon = True
 t.start()
-print sys.argv
 if len(sys.argv) == 1 or not (sys.argv[1] == 'd' or sys.argv[1] == 's'):
     print 'You must specify the type of game world: d for deterministic, s for stochastic'
 else:

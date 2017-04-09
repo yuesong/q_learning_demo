@@ -33,26 +33,26 @@ def render_grid(walls, exits):
             render_cell((x, y), 'white')
     
     for pos in walls:
-        render_cell(pos, 'black')
+        render_cell(pos, 'brown')
     
     for (pos, c, w) in exits:
         render_cell(pos, c)
 
-robot = (0, BOARD_HEIGHT-1)
+robot = (0, BOARD_HEIGHT-6)
 # exits = [((BOARD_WIDTH-1, 0), 'green', 1), ((BOARD_WIDTH-1, 1), 'red', -1)]
 exits = [((BOARD_WIDTH-1, 0), 'green', 1)]
 score = 1
 game_over = False
-walk_reward = -0.04
+walk_reward = -0.01
 
 # uncomment to do a 5x5 test
 #walls = [(1, 1), (1, 2), (2, 1), (2, 2)]
 
 # uncomment to use constant walls for 10x10 grid
-walls = [(1,2),(1,4),(1,6),(1,9),(2,4),(2,5),(2,7),(2,8),(2,9),(3,1),(3,2),(3,3),(3,4),(3,6),(4,1),(4,3),(4,5),(5,1),(5,2),(5,3),(5,4),(6,6),(5,6),(7,2),(7,5),(7,6),(7,7),(7,8),(8,2),(8,5),(8,8),(9,1)]
+#walls = [(1,2),(1,4),(1,6),(1,9),(2,4),(2,5),(2,7),(2,8),(2,9),(3,1),(3,2),(3,3),(3,4),(3,6),(4,1),(4,3),(4,5),(5,1),(5,2),(5,3),(5,4),(6,6),(5,6),(7,2),(7,5),(7,6),(7,7),(7,8),(8,2),(8,5),(8,8),(9,1)]
 
 # random walls for fun
-#walls = generate_random_walls(BOARD_WIDTH*BOARD_HEIGHT/4, [robot] + [pos for (pos, c, w) in exits])
+walls = generate_random_walls(int(BOARD_WIDTH*BOARD_HEIGHT/3.5), [robot] + [pos for (pos, c, w) in exits])
 
 render_grid(walls, exits)
 me = render_cell(robot, 'blue')
@@ -70,7 +70,7 @@ def real_action(action):
         return action
     else:
         dice = random.randrange(10)
-        # 0.6 chance for the required action, 0.1 change for each of the other three or no action
+        # 60% chance for the required action, 10% chance for each of the other three and 10% for no action
         if (dice >= 4):
             return action
         else:
@@ -87,6 +87,9 @@ def try_move(action):
     new_x = robot[0] + dx
     new_y = robot[1] + dy
     score += walk_reward
+    if score < -0.5:
+        game_over = True
+        return
     if (new_x >= 0) and (new_x < BOARD_WIDTH) and (new_y >= 0) and (new_y < BOARD_HEIGHT) and not ((new_x, new_y) in walls):
         move_robot((new_x, new_y))
     for (exit_pos, c, w) in exits:
